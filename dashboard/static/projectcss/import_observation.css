@@ -1,0 +1,72 @@
+/* === Import Compliance Checklist Page === */
+.container {
+  max-width: 800px;
+}
+
+.container h3 {
+  font-weight: 600;
+  color: #1e293b; /* slate-800 */
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Form Card */
+form {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* Labels */
+form .form-label {
+  font-weight: 500;
+  color: #374151; /* slate-700 */
+  margin-bottom: 0.4rem;
+}
+
+/* Inputs & Selects */
+form .form-control,
+form .form-select {
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.95rem;
+  transition: all 0.2s ease-in-out;
+}
+
+form .form-control:focus,
+form .form-select:focus {
+  border-color: #3b82f6; /* blue-500 */
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+}
+
+/* Buttons */
+form button.btn {
+  padding: 0.6rem 1.4rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease-in-out;
+}
+
+form button.btn-primary {
+  background-color: #3b82f6; /* Tailwind blue-500 */
+  border: none;
+}
+
+form button.btn-primary:hover {
+  background-color: #2563eb; /* blue-600 */
+}
+
+/* Alerts (Messages) */
+.alert {
+  margin-top: 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+}
+
+/* Small helper text */
+form small.form-text {
+  color: #6b7280; /* gray-500 */
+}

@@ -1,0 +1,175 @@
+/* === Users Page Styling (Modernized) === */
+
+/* Page container */
+.container-fluid {
+  padding: 2rem;
+  background: #f9fafb; /* subtle light gray background */
+  min-height: 100vh;
+}
+
+/* === Card General Styles === */
+.card {
+  border: none;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+  margin-bottom: 2rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.card-header {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  padding: 1rem 1.25rem;
+  color: white;
+}
+
+.card-header h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* === Form Fields === */
+.form-group label {
+  font-weight: 500;
+  color: #374151; /* slate-700 */
+  margin-bottom: 0.35rem;
+  display: block;
+}
+
+.form-control {
+  border-radius: 0.6rem;
+  border: 1px solid #d1d5db;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.95rem;
+  background: #fdfdfd;
+  transition: all 0.25s ease-in-out;
+}
+
+.form-control:focus {
+  border-color: #3b82f6;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(59,130,246,0.25);
+}
+
+/* === Form Buttons === */
+.card-footer button {
+  border-radius: 0.6rem;
+  font-weight: 500;
+  padding: 0.65rem 1.2rem;
+  font-size: 0.95rem;
+  transition: all 0.25s ease-in-out;
+}
+
+.card-footer .btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border: none;
+  color: white;
+}
+
+.card-footer .btn-primary:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  transform: translateY(-1px);
+}
+
+.card-footer .btn-secondary {
+  background: #6b7280;
+  border: none;
+  color: white;
+}
+
+.card-footer .btn-secondary:hover {
+  background: #4b5563;
+  transform: translateY(-1px);
+}
+
+/* === Table Styling === */
+.table {
+  border-collapse: separate;
+  border-spacing: 0 0.6rem;
+  width: 100%;
+}
+
+.table thead th {
+  background: #f3f4f6;
+  font-weight: 600;
+  color: #374151;
+  border: none;
+  padding: 1rem;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.table tbody tr {
+  background: #ffffff;
+  border-radius: 0.6rem;
+  transition: all 0.25s ease-in-out;
+}
+
+.table tbody tr:nth-child(even) {
+  background: #f9fafb;
+}
+
+.table tbody tr:hover {
+  transform: scale(1.01);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.table td {
+  border: none;
+  padding: 0.95rem 1.2rem;
+  vertical-align: middle;
+  font-size: 0.92rem;
+}
+
+/* === Table Action Buttons === */
+.table .btn {
+  border-radius: 2rem;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.table .btn-warning {
+  background: #f59e0b;
+  border: none;
+  color: white;
+}
+
+.table .btn-warning:hover {
+  background: #d97706;
+}
+
+.table .btn-danger {
+  background: #ef4444;
+  border: none;
+  color: white;
+}
+
+.table .btn-danger:hover {
+  background: #dc2626;
+}
+
+/* === Modal Styling === */
+.modal-content {
+  border-radius: 1rem;
+  border: none;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.modal-header {
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.modal-footer {
+  border-top: 1px solid #e5e7eb;
+  background: #f9fafb;
+}

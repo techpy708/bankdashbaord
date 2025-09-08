@@ -1,0 +1,651 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'projectcss/view_observation.css' %}">
+
+
+
+
+<div class="container-fluid mt-5">
+    <h3 class="mb-4">Filter Compliance</h3>
+
+    <!-- Filter Form: Inline Fields -->
+    <form method="get" class="form-inline mb-4">
+    <div class="form-group d-flex flex-column mr-3 mb-0" style="min-width: 150px;">
+        <label for="branch_code" class="mb-1">Branch Code</label>
+        <select name="branch_code" id="branch_code" class="form-control form-control-sm">
+                <option value="">All</option>
+                {% for branch in all_branches %}
+                    <option value="{{ branch.branch_code }}" {% if branch_code == branch.branch_code %}selected{% endif %}>
+                        {{ branch.branch_code }} - {{ branch.branch_name }}
+                    </option>
+                {% endfor %}
+            </select>
+
+        </div>
+
+        <div class="form-group d-flex flex-column mr-3 mb-0" style="min-width: 150px;">
+            <label for="department" class="mb-1">Department</label>
+            <select name="department" id="department" class="form-control form-control-sm">
+                <option value="">All</option>
+                {% for dept in all_departments %}
+                    <option value="{{ dept.name }}" {% if department == dept.name %}selected{% endif %}>
+                        {{ dept.name }}
+                    </option>
+                {% endfor %}
+            </select>
+
+        </div>
+
+        <div class="form-group d-flex flex-column mr-3 mb-0" style="min-width: 130px;">
+            <label for="financial_year" class="mb-1">Financial Year</label>
+            <input type="text" name="financial_year" id="financial_year" class="form-control form-control-sm" placeholder="YYYY-YYYY" pattern="^\d{4}-\d{4}$" value="{{ financial_year }}">
+        </div>
+
+        <div class="form-group d-flex flex-column mr-3 mb-0" style="min-width: 130px;">
+            <label for="status" class="mb-1">Status</label>
+            <select name="status" id="status" class="form-control form-control-sm">
+                <option value="">-- Select --</option>
+                <option value="ALL" {% if period == "ALL" or not period %}selected{% endif %}>ALL</option>
+                <option value="OPEN" {% if period == "OPEN" %}selected{% endif %}>OPEN</option>
+                <option value="CLOSED" {% if period == "CLOSED" %}selected{% endif %}>CLOSED</option>
+            </select>
+        </div>
+
+        <div class="d-flex align-items-end">
+
+            
+            <div class="form-group d-flex flex-column mr-3 mb-0" style="min-width: 130px;">
+                <label for="period" class="mb-1">Period</label>
+                <select name="period" id="period" class="form-control form-control-sm">
+                    <option value="">-- Select --</option>
+                    <option value="ALL" {% if period == "ALL" or not period %}selected{% endif %}>ALL</option>
+                    <option value="JANUARY" {% if period == "JANUARY" %}selected{% endif %}>JANUARY</option>
+                    <option value="FEBRUARY" {% if period == "FEBRUARY" %}selected{% endif %}>FEBRUARY</option>
+                    <option value="MARCH" {% if period == "MARCH" %}selected{% endif %}>MARCH</option>
+                    <option value="APRIL" {% if period == "APRIL" %}selected{% endif %}>APRIL</option>
+                    <option value="MAY" {% if period == "MAY" %}selected{% endif %}>MAY</option>
+                    <option value="JUNE" {% if period == "JUNE" %}selected{% endif %}>JUNE</option>
+                    <option value="JULY" {% if period == "JULY" %}selected{% endif %}>JULY</option>
+                    <option value="AUGUST" {% if period == "AUGUST" %}selected{% endif %}>AUGUST</option>
+                    <option value="SEPTEMBER" {% if period == "SEPTEMBER" %}selected{% endif %}>SEPTEMBER</option>
+                    <option value="OCTOBER" {% if period == "OCTOBER" %}selected{% endif %}>OCTOBER</option>
+                    <option value="NOVEMBER" {% if period == "NOVEMBER" %}selected{% endif %}>NOVEMBER</option>
+                    <option value="DECEMBER" {% if period == "DECEMBER" %}selected{% endif %}>DECEMBER</option>
+                    <option value="Q1" {% if period == "Q1" %}selected{% endif %}>Q1</option>
+                    <option value="Q2" {% if period == "Q2" %}selected{% endif %}>Q2</option>
+                    <option value="Q3" {% if period == "Q3" %}selected{% endif %}>Q3</option>
+                    <option value="Q4" {% if period == "Q4" %}selected{% endif %}>Q4</option>
+                    <option value="ANNUAL" {% if period == "ANNUAL" %}selected{% endif %}>ANNUAL</option>
+                </select>
+            </div>
+
+            
+            <div class="ml-auto d-flex align-items">
+                <button type="submit" class="btn btn-primary btn-sm mr-2">Filter</button>
+                {% if user_role == "Admin" or user_role == "HO Audit" %}
+                    <button type="button" id="exportExcel" class="btn btn-success btn-sm">Export to Excel</button>
+                {% endif %}
+            </div>
+        </div>
+
+
+
+    </form>
+
+    {% if observations %}
+   
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered  my-3 w-100">
+            <thead class="thead-dark">
+                <tr>
+                    <th style="width: 120px;">Actions</th>
+                    <th>Point</th>
+                    <th>Branch Code</th>
+                    <th>Audit Type</th>
+                    <th>Status</th>
+                    <th>Approved</th>
+                    <th>Department</th>
+                    <th>Category</th>
+                    <th>Checklist</th>
+                    <th>Auditor's Remarks</th>
+                    <th>Risk Category</th>
+                    <th>Branch Remarks</th>
+                    <th>HO Remarks</th>
+                    <th>Due Date</th>       
+                    <th>Financial year</th>
+                    <th>Period</th>
+                    <th>Observation File</th>
+                    <th>Annexure</th>
+                    
+                </tr>
+
+
+                <tr>
+                <th></th> <!-- For ID -->
+                <th></th>
+                <th><select class="form-control form-control-sm column-filter"><option value="">All</option></select></th>
+                <th><select class="form-control form-control-sm column-filter"><option value="">All</option></select></th>
+                <th><select class="form-control form-control-sm column-filter"><option value="">All</option></select></th>
+                <th><select class="form-control form-control-sm column-filter"><option value="">All</option></select></th>
+                <th><select class="form-control form-control-sm column-filter"><option value="">All</option></select></th>
+                <th><select class="form-control form-control-sm column-filter"><option value="">All</option></select></th>
+                <th></th>
+                <th></th>
+                <th><select class="form-control form-control-sm column-filter"><option value="">All</option></select></th>
+                <th></th>
+                <th></th>
+                <th><select class="form-control form-control-sm column-filter"><option value="">All</option></select></th>
+                <th><select class="form-control form-control-sm column-filter"><option value="">All</option></select></th>
+                <th><select class="form-control form-control-sm column-filter"><option value="">All</option></select></th>
+                <th></th>
+                <th></th>
+                
+            
+                </tr>
+
+            </thead>
+            <tbody>
+                {% for obs in observations %}
+                <tr data-id="{{ obs.id }}">
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-warning edit-btn"><i class="fa fa-edit"></i></button>
+                        <button class="btn btn-sm btn-success save-btn d-none"><i class="fa fa-save"></i></button>
+                        {% if request.user.user_role == 'Admin' or request.user.user_role == 'HO Audit' %}
+                            <button 
+                                class="btn btn-sm btn-danger delete-btn" 
+                                data-toggle="modal" 
+                                data-target="#confirmDeleteModal"
+                                data-id="{{ obs.id }}"
+                                data-bank-name="{{ obs.bank_name }}"
+                                data-bank-code="{{ obs.branch_code }}"
+                            >
+                                <i class="fa fa-trash"></i>
+                            </button>
+
+                        {% endif %}
+                    </td>
+                    <td>{{ obs.point }}</td>
+                    <td>{{ obs.branch_code }}</td>
+                    <td>{{ obs.audit_type }}</td>
+                    <td class="editable" data-field="status">
+                        {% if obs.status == 'OPEN' %}
+                            <span class="badge badge-danger">OPEN</span>
+                        {% elif obs.status == 'CLOSED' %}
+                            <span class="badge badge-success">CLOSED</span>
+                        {% else %}
+                            <span class="badge badge-secondary">{{ obs.status }}</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="editable" data-field="approved">
+                        {% if obs.approved == 'YES' %}
+                            <span class="badge badge-success">YES</span>
+                        {% else %}
+                            <span class="badge badge-secondary">-</span>
+                        {% endif %}
+                    </td>
+
+
+                    <td>{{ obs.department }}</td>
+                    <td>{{ obs.category }}</td>
+                    <td class="fixed-wrap-cell">{{ obs.checklist }}</td>
+                    <td class="fixed-wrap-cell">{{ obs.auditors_remarks }}</td>
+                    <td>
+                        {% if obs.risk_category == 'High' %}
+                            <span class="badge badge-danger">HIGH</span>
+                        {% elif obs.risk_category == 'Medium' %}
+                            <span class="badge badge-warning text-dark">MEDIUM</span>
+                        {% elif obs.risk_category == 'Low' %}
+                            <span class="badge badge-success">LOW</span>
+                        {% else %}
+                            <span class="badge badge-secondary">{{ obs.risk_category }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="editable-text fixed-wrap-cell" data-field="branch_remarks">{{ obs.branch_remarks }}</td>
+                    <td class="editable-text fixed-wrap-cell" data-field="ho_remarks">{{ obs.ho_remarks }}</td>
+
+                    <td>{{ obs.due_date|date:"d-m-Y" }}</td>
+
+                    <td>{{ obs.financial_year }}</td>
+                    <td>{{ obs.period }}</td>
+                    <td>
+                        <!-- List existing uploaded files sorted by uploaded_at DESC -->
+                        {% for file in obs.files.all|dictsortreversed:"uploaded_at" %}
+                            <div style="margin-bottom: 8px;">
+                                <a href="{% url 'download_observation_file' file.id %}" target="_blank">{{ file.file_name }}</a>
+                                
+                                {% if forloop.first %}
+                                    <span class="badge badge-success ml-2" style="font-size: 0.75em;">Latest</span>
+                                {% endif %}
+                                <br>
+                                <small>
+                                    Uploaded By: {% if file.uploaded_by %}
+                                        {{ file.uploaded_by.username }}
+                                    {% else %}
+                                        Unknown
+                                    {% endif %}
+                                    <br>
+                                    Uploaded at: {{ file.uploaded_at|date:"d-m-Y H:i" }}
+                                </small>
+                            </div>
+                        {% empty %}
+                            No files uploaded
+                        {% endfor %}
+
+                        <!-- Upload files form -->
+                        <form action="{% url 'upload_files' obs.id %}" method="post" enctype="multipart/form-data" style="margin-top: 10px;">
+                            {% csrf_token %}
+                            <input type="file" name="files" multiple>
+                            <button type="submit" class="btn btn-sm btn-primary mt-1">Upload Files</button>
+                        </form>
+                    </td>
+
+
+                    <td>
+                        <!-- List existing uploaded files sorted by uploaded_at DESC -->
+                        {% for file in obs.annexure_files.all|dictsortreversed:"uploaded_at" %}
+                            <div style="margin-bottom: 8px;">
+                                <a href="{% url 'download_annexure_file' file.id %}" target="_blank">{{ file.file_name }}</a>
+                                
+                                {% if forloop.first %}
+                                    <span class="badge badge-success ml-2" style="font-size: 0.75em;">Latest</span>
+                                {% endif %}
+                                <br>
+                                <small>
+                                    Uploaded By: {% if file.uploaded_by %}
+                                        {{ file.uploaded_by.username }}
+                                    {% else %}
+                                        Unknown
+                                    {% endif %}
+                                    <br>
+                                    Uploaded at: {{ file.uploaded_at|date:"d-m-Y H:i" }}
+                                </small>
+                            </div>
+                        {% empty %}
+                            No files uploaded
+                        {% endfor %}
+
+                        <!-- Upload files form -->
+                        <form action="{% url 'upload_annexure_files' obs.id %}" method="post" enctype="multipart/form-data" style="margin-top: 10px;">
+                            {% csrf_token %}
+                            <input type="file" name="files" multiple 
+                                {% if user.user_role == "Branch Manager" or user.user_role == "HO Manager" %}disabled{% endif %}>
+
+                            <button type="submit" class="btn btn-sm btn-primary mt-1"
+                                    {% if user.user_role == "Branch Manager" or user.user_role == "HO Manager" %}disabled{% endif %}>
+                                Upload Files
+                            </button>
+                        </form>
+
+
+                    </td>
+
+
+
+
+                    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info mt-4">No observations found for the selected filters.</div>
+    {% endif %}
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete <strong id="bankName"></strong>
+        (<span id="bankCode"></span>)?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <a id="confirmDeleteBtn" href="#" class="btn btn-danger">Yes, Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+{% endblock %}
+
+
+{% block extra_scripts %}
+<script>
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
+const USER_ROLE = "{{ user_role }}"; 
+
+document.addEventListener("DOMContentLoaded", function () {
+
+
+    const table = document.querySelector('table');
+    const filters = table.querySelectorAll('select.column-filter');
+    const rows = Array.from(table.querySelector('tbody').rows);
+
+    filters.forEach(filter => {
+        // Get the column index of this filter's <th>
+        const th = filter.closest('th');
+        const colIndex = Array.from(th.parentNode.children).indexOf(th);
+
+        // Collect unique values from this column
+        const values = new Set();
+        rows.forEach(row => {
+            const cellText = row.cells[colIndex].textContent.trim();
+            if (cellText) values.add(cellText);
+        });
+
+        // Populate the filter options sorted
+        [...values].sort().forEach(value => {
+            const option = document.createElement('option');
+            option.value = value;
+            option.textContent = value;
+            filter.appendChild(option);
+        });
+
+        // Filtering event on this filter only affects its column
+        filter.addEventListener('change', () => {
+            const selected = filter.value;
+
+            rows.forEach(row => {
+                const cell = row.cells[colIndex];
+                const show = !selected || cell.textContent.trim() === selected;
+                row.style.display = show ? '' : 'none';
+            });
+        });
+    });
+
+
+    // Edit button
+    // Edit button
+    document.querySelectorAll(".edit-btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+            const row = this.closest("tr");
+
+            // Status field
+            const statusCell = row.querySelector('[data-field="status"]');
+            const currentStatus = statusCell.innerText.trim();
+            if (!statusCell.querySelector("select")) {
+                statusCell.dataset.original = currentStatus;
+                statusCell.innerHTML = `
+                    <select class="form-control form-control-sm">
+                        <option value="OPEN" ${currentStatus === "OPEN" ? "selected" : ""}>OPEN</option>
+                        <option value="CLOSED" ${currentStatus === "CLOSED" ? "selected" : ""}>CLOSED</option>
+                    </select>
+                `;
+            }
+
+            // Approved field
+            const approvedCell = row.querySelector('[data-field="approved"]');
+            const currentApproved = approvedCell.innerText.trim();
+            if (!approvedCell.querySelector("select")) {
+                approvedCell.dataset.original = currentApproved;
+                approvedCell.innerHTML = `
+                    <select class="form-control form-control-sm">
+                        <option value="">--</option>
+                        <option value="YES" ${currentApproved === "YES" ? "selected" : ""}>YES</option>
+                        <option value="REJECT">REJECT</option>
+                    </select>
+                `;
+            }
+
+            // Branch Remarks
+            const branchRemarksCell = row.querySelector('[data-field="branch_remarks"]');
+            const currentBranchRemarks = branchRemarksCell.textContent.trim();
+            if (!branchRemarksCell.querySelector("textarea")) {
+                branchRemarksCell.dataset.original = currentBranchRemarks;
+                branchRemarksCell.innerHTML = `<textarea class="form-control form-control-sm">${currentBranchRemarks}</textarea>`;
+            }
+
+            // HO Remarks
+            const hoRemarksCell = row.querySelector('[data-field="ho_remarks"]');
+            const currentHoRemarks = hoRemarksCell.textContent.trim();
+            if (!hoRemarksCell.querySelector("textarea")) {
+                hoRemarksCell.dataset.original = currentHoRemarks;
+                hoRemarksCell.innerHTML = `<textarea class="form-control form-control-sm">${currentHoRemarks}</textarea>`;
+            }
+
+            if (USER_ROLE === "Branch Manager" || USER_ROLE === "HO Manager") {
+                // Disable Approved select
+                const approvedSelect = approvedCell.querySelector("select");
+                if (approvedSelect) approvedSelect.disabled = true;
+
+                // Disable HO Remarks textarea
+                const hoRemarksTextarea = hoRemarksCell.querySelector("textarea");
+                if (hoRemarksTextarea) hoRemarksTextarea.disabled = true;
+
+                // Disable Annexure (if present)
+               
+            }
+
+
+            row.querySelector(".edit-btn").classList.add("d-none");
+            row.querySelector(".save-btn").classList.remove("d-none");
+        });
+    });
+
+    // Save button
+    // Save button
+    document.querySelectorAll(".save-btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+            const row = this.closest("tr");
+            const id = row.dataset.id;
+
+            const statusSelect = row.querySelector('[data-field="status"] select');
+            const approvedSelect = row.querySelector('[data-field="approved"] select');
+
+            const newStatus = statusSelect.value;
+            const newApproved = approvedSelect.value;
+
+            const branchRemarksTextarea = row.querySelector('[data-field="branch_remarks"] textarea');
+            const hoRemarksTextarea = row.querySelector('[data-field="ho_remarks"] textarea');
+
+            const newBranchRemarks = branchRemarksTextarea ? branchRemarksTextarea.value : "";
+            const newHoRemarks = hoRemarksTextarea ? hoRemarksTextarea.value : "";
+
+            fetch(`/dashboard/update_observation/${id}/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({ status: newStatus, approved: newApproved,branch_remarks: newBranchRemarks, ho_remarks: newHoRemarks })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const statusCell = row.querySelector('[data-field="status"]');
+                    const approvedCell = row.querySelector('[data-field="approved"]');
+                    const branchRemarksCell = row.querySelector('[data-field="branch_remarks"]');
+                    const hoRemarksCell = row.querySelector('[data-field="ho_remarks"]');
+
+                    // Update status cell (you already have this)
+                    let statusHtml = '';
+                    if (newApproved === "YES") {
+                        statusHtml = newStatus === "CLOSED"
+                            ? `<span class="badge badge-success">CLOSED</span>`
+                            : `<span class="badge badge-danger">OPEN</span>`;
+                    } else if (newApproved === "REJECT") {
+                        statusHtml = `<span class="badge badge-danger">OPEN</span>`;
+                    } else {
+                        statusHtml = newStatus === "CLOSED"
+                            ? `<span class="badge badge-success">CLOSED</span>`
+                            : `<span class="badge badge-danger">OPEN</span>`;
+                    }
+                    statusCell.innerHTML = statusHtml;
+
+                    // Update approved cell (you already have this)
+                    let approvedHtml = '';
+                    if (newApproved === "YES") {
+                        approvedHtml = `<span class="badge badge-success">YES</span>`;
+                    } else {
+                        approvedHtml = `<span class="badge badge-secondary">-</span>`;
+                    }
+                    approvedCell.innerHTML = approvedHtml;
+
+                    // NEW: Update branch remarks cell
+                    branchRemarksCell.textContent = newBranchRemarks;
+
+                    // NEW: Update ho remarks cell
+                    hoRemarksCell.textContent = newHoRemarks;
+
+                } else {
+                    alert("❌ Failed to update: " + (data.error || ""));
+                }
+
+                // Always switch buttons back
+                row.querySelector(".save-btn").classList.add("d-none");
+                row.querySelector(".edit-btn").classList.remove("d-none");
+            });
+
+
+        });
+    });
+
+
+    // Delete button
+    // Store the ID of the observation to delete when modal opens
+    let obsToDeleteId = null;
+
+    // When modal is shown, populate the modal with data from the clicked button
+    $('#confirmDeleteModal').on('show.bs.modal', function(event) {
+        const button = $(event.relatedTarget); // Button that triggered the modal
+        obsToDeleteId = button.data('id');
+        const bankName = button.data('bank-name');
+        const bankCode = button.data('bank-code');
+
+        const modal = $(this);
+        modal.find('#bankName').text(bankName);
+        modal.find('#bankCode').text(bankCode);
+    });
+
+    // When confirm button in modal is clicked, send the delete request
+    $('#confirmDeleteBtn').click(function(e) {
+        e.preventDefault();
+
+        if (!obsToDeleteId) return;
+
+        fetch(`/dashboard/delete_observation/${obsToDeleteId}/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": getCookie('csrftoken'),
+                "Content-Type": "application/json",
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // Remove the row from the table
+                $(`tr[data-id="${obsToDeleteId}"]`).remove();
+                // Hide the modal
+                $('#confirmDeleteModal').modal('hide');
+                // No alert here anymore
+            } else {
+                alert("❌ Delete failed: " + (data.error || ""));
+            }
+        })
+
+        .catch(() => alert("❌ An error occurred."));
+
+    });
+
+
+
+
+
+    document.getElementById("exportExcel").addEventListener("click", async function () {
+        const table = document.querySelector("table");
+        const rows = Array.from(table.querySelector("tbody").rows);
+
+        // Only visible rows (after filter)
+        const visibleRows = rows.filter(row => row.style.display !== "none");
+
+        // Create workbook & worksheet
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet("Observations");
+
+        // Add header row
+        worksheet.addRow([
+            "Point",
+            "Branch Code",
+            "Audit Type",
+            "Status",
+            "Approved",
+            "Department",
+            "Category",
+            "Checklist",
+            "Auditor's Remarks",
+            "Risk Category",
+            "Branch Remarks",
+            "HO Remarks",
+            "Due Date",
+            "Financial Year",
+            "Period"
+        ]);
+
+        // Add data rows
+        visibleRows.forEach(row => {
+            const cells = row.cells;
+            worksheet.addRow([
+            cells[1].innerText.trim(),  // Point
+            cells[2].innerText.trim(),  // Branch Code
+            cells[3].innerText.trim(),  // Department
+            cells[4].innerText.trim(),  // Observation
+            cells[5].innerText.trim(),  // Risk Category
+            cells[6].innerText.trim(),  // Remarks
+            cells[7].innerText.trim(),  // Status
+            cells[8].innerText.trim(),  // Approved
+            cells[9].innerText.trim(),  // Observation Date
+            cells[10].innerText.trim(), // Due Date
+            cells[11].innerText.trim(), // Financial Year
+            cells[12].innerText.trim(),  // Period
+            cells[13].innerText.trim(),  // Period
+            cells[14].innerText.trim(),  // Period
+            cells[15].innerText.trim()  // Period
+        ]);
+        });
+
+        // Export to file
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "filtered_observations.xlsx";
+        link.click();
+    });
+
+
+});
+</script>
+
+
+
+
+{% endblock %}

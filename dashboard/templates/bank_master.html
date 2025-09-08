@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<section class="content">
+  <div class="container-fluid">
+    <div class="row justify-content-center">
+      <div class="col-md-10">
+
+        <!-- Add / Edit Bank -->
+        <div class="card card-primary mt-4">
+          <div class="card-header">
+            <h3 class="card-title">
+              {% if edit_bank %} Edit Bank {% else %} Add New Bank {% endif %}
+            </h3>
+          </div>
+
+          <form method="post">
+            {% csrf_token %}
+            {% if edit_bank %}
+              <input type="hidden" name="bank_id" value="{{ edit_bank.id }}">
+            {% endif %}
+            <div class="card-body">
+              <div class="form-group">
+                <label>Branch Code</label>
+                {{ form.branch_code|add_class:"form-control" }}
+              </div>
+              <div class="form-group">
+                <label>Branch Name</label>
+                {{ form.branch_name|add_class:"form-control" }}
+              </div>
+            </div>
+            <div class="card-footer">
+              <button type="submit" class="btn btn-primary btn-block">
+                {% if edit_bank %}
+                  <i class="fas fa-save"></i> Update Bank
+                {% else %}
+                  <i class="fas fa-plus"></i> Add Bank
+                {% endif %}
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Upload Banks (CSV) -->
+        <div class="card card-info mt-3">
+          <div class="card-header">
+            <h3 class="card-title">Bulk Upload Banks (CSV)</h3>
+          </div>
+          <form method="post" action="{% url 'upload_banks' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="card-body">
+              {{ upload_form.file }}
+              <small class="form-text text-muted">CSV format: <code>branch_code, branch_name</code></small>
+            </div>
+            <div class="card-footer">
+              <button type="submit" class="btn btn-info btn-block">
+                <i class="fas fa-file-upload"></i> Upload
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Success Message -->
+        {% if messages %}
+          <div class="alert alert-success mt-3">
+            {% for message in messages %}
+              {{ message }}
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <!-- Banks List -->
+        <div class="card card-secondary mt-3">
+          <div class="card-header">
+            <h3 class="card-title">Existing Banks</h3>
+          </div>
+          <div class="card-body">
+            <table class="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th style="width:120px;">Actions</th>
+                  <th>Branch Code</th>
+                  <th>Branch Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for bank in banks %}
+                  <tr>
+                    <td>
+                      <a href="{% url 'manage_banks' %}?edit={{ bank.id }}" class="btn btn-sm btn-warning">
+                          <i class="fas fa-edit"></i>
+                      </a>
+                      <button type="button" class="btn btn-sm btn-danger"
+                              data-toggle="modal"
+                              data-target="#deleteModal"
+                              data-url="{% url 'delete_bank' bank.id %}"
+                              data-name="{{ bank.branch_name }}"
+                              data-code="{{ bank.branch_code }}">
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
+                    </td>
+                    <td>{{ bank.branch_code }}</td>
+                    <td>{{ bank.branch_name }}</td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="3" class="text-center">No banks found.</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete <strong id="bankName"></strong>
+        (<span id="bankCode"></span>)?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <a id="confirmDeleteBtn" href="#" class="btn btn-danger">Yes, Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  $('#deleteModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget);
+    var url = button.data('url');
+    var name = button.data('name');
+    var code = button.data('code');
+
+    var modal = $(this);
+    modal.find('#bankName').text(name);
+    modal.find('#bankCode').text(code);
+    modal.find('#confirmDeleteBtn').attr('href', url);
+  });
+</script>
+{% endblock %}

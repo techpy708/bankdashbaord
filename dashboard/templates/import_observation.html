@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'dashboard/plugins/bootstrap/css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'dashboard/plugins/fontawesome-free/css/all.min.css' %}">
+<link rel="stylesheet" href="{% static 'projectcss/changepassword.css' %}">
+<link rel="stylesheet" href="{% static 'projectcss/import_observation.css' %}">
+<style>
+    .action-buttons button {
+        margin-right: 5px;
+    }
+    #email_recipients {
+    min-height: 200px; /* Increase as needed */
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h3 class="mb-4">Import Compliance Checklist</h3>
+
+    <form method="post" enctype="multipart/form-data" action="{% url 'import_observations' %}">
+        {% csrf_token %}
+
+        <!-- Financial Year -->
+        <div class="mb-3">
+            <label for="financial_year" class="form-label">Financial Year</label>
+            <input type="text" name="financial_year" id="financial_year" class="form-control"
+                placeholder="YYYY-YYYY"
+                pattern="^\d{4}-\d{4}$"
+                title="Enter year in YYYY-YYYY format, e.g., 2024-2025"
+                required>
+        </div>
+
+        <!-- Period -->
+        <div class="mb-3">
+            <label for="period" class="form-label">Period</label>
+            <select name="period" id="period" class="form-select" required>
+                <option value="">-- Select Period --</option>
+                <option value="JANUARY">JANUARY</option>
+                <option value="FEBRUARY">FEBRUARY</option>
+                <option value="MARCH">MARCH</option>
+                <option value="APRIL">APRIL</option>
+                <option value="MAY">MAY</option>
+                <option value="JUNE">JUNE</option>
+                <option value="JULY">JULY</option>
+                <option value="AUGUST">AUGUST</option>
+                <option value="SEPTEMBER">SEPTEMBER</option>
+                <option value="OCTOBER">OCTOBER</option>
+                <option value="NOVEMBER">NOVEMBER</option>
+                <option value="DECEMBER">DECEMBER</option>
+                <option value="Q1">Q1</option>
+                <option value="Q2">Q2</option>
+                <option value="Q3">Q3</option>
+                <option value="Q4">Q4</option>
+                <option value="ANNUAL">ANNUAL</option>
+            </select>
+        </div>
+
+        <!-- Auditor Name -->
+        <!-- Audit Type -->
+        <div class="mb-3">
+            <label for="audit_type" class="form-label">Audit Type</label>
+            <select name="audit_type" id="audit_type" class="form-select" required>
+                <option value="">-- Select Audit Type --</option>
+                <option value="INTERNAL">INTERNAL</option>
+                <option value="CONCURRENT">CONCURRENT</option>
+            </select>
+        </div>
+
+
+
+        <!-- ✅ Due Date -->
+        <div class="mb-3">
+            <label for="due_date" class="form-label">Due Date</label>
+            <input type="date" name="due_date" id="due_date" class="form-control" required>
+        </div>
+
+        <!-- Email Recipients -->
+        <div class="mb-3">
+            <label for="email_recipients" class="form-label">Send Email To</label>
+            <select name="email_recipients" id="email_recipients" class="form-select" multiple>
+                {% for user in users %}
+                    <option value="{{ user.id }}">{{ user.first_name }} {{ user.last_name }}</option>
+                {% endfor %}
+            </select>
+            <small class="form-text text-muted">Hold Ctrl (Windows) / Cmd (Mac) to select multiple users.</small>
+        </div>
+
+        <!-- File Upload -->
+        <div class="mb-3">
+            <label for="file" class="form-label">Upload Excel File</label>
+            <input type="file" name="file" id="file" class="form-control" accept=".xlsx,.xls" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-file-import"></i> Import File
+        </button>
+    </form>
+
+    {% if messages %}
+        <div>
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+
+   
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'dashboard/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+{% endblock %}
