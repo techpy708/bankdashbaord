@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-vzhz6o=t7&0q34y%*0fdg^s)s^!3=g-h!wh272%w-!c0@g+g17
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://bankdashbaord.onrender.com','localhost','127.0.0.0']
 
 
 # Application definition
