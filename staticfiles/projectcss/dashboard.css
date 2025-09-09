@@ -1,0 +1,102 @@
+/* === Dashboard Overview === */
+.container {
+  max-width: 1200px;
+}
+
+/* Title */
+.container h2 {
+  font-weight: 700;
+  color: #1e293b; /* slate-800 */
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+  letter-spacing: -0.5px;
+}
+
+/* Filter form */
+form.form-inline {
+  background: #f9fafb;
+  padding: 1rem 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+}
+
+form.form-inline label {
+  font-weight: 500;
+  margin-right: 0.4rem;
+  color: #374151;
+}
+
+form.form-inline .form-control {
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  min-width: 180px;
+  transition: all 0.2s ease-in-out;
+}
+
+form.form-inline .form-control:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+}
+
+/* Clear button */
+#clearFiltersBtn {
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: background 0.2s ease-in-out;
+}
+
+#clearFiltersBtn:hover {
+  background: #4b5563; /* gray-700 */
+  color: #fff;
+}
+
+/* Cards */
+.card {
+  transition: all 0.2s ease-in-out;
+  border-radius: 1rem !important;
+  border: none !important;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08) !important;
+}
+
+.card-body i {
+  display: inline-block;
+  padding: 0.7rem;
+  border-radius: 50%;
+  background: #f3f4f6;
+}
+
+.card-title {
+  font-size: 1rem !important;
+  color: #374151;
+  font-weight: 600 !important;
+}
+
+.card-text {
+  font-size: 2rem !important;
+  font-weight: 700 !important;
+}
+
+/* Icon color tweaks for better contrast */
+.text-primary {
+  color: #2563eb !important;
+}
+
+.text-warning {
+  color: #d97706 !important;
+}
+
+.text-success {
+  color: #059669 !important;
+}
+
+.text-danger {
+  color: #dc2626 !important;
+}
+
+.text-info {
+  color: #0ea5e9 !important;
+}

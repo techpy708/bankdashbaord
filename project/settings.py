@@ -155,7 +155,11 @@ STATIC_DIRS = [
     os.path.join(BASE_DIR, 'static'),   # development assets
 ]
 
-#STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # collectstatic (optional)
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # collectstatic (optional)
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
 LOGIN_REDIRECT_URL = '/dashboard/dashboard/'  # After successful login
 LOGOUT_REDIRECT_URL = '/dashboard/login/'

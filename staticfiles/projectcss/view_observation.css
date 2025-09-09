@@ -1,0 +1,169 @@
+/* ========= Table Cleanup & Layout ========= */
+
+.table-responsive {
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+}
+
+/* Prevent long text from wrapping */
+/* GLOBAL: Prevent wrapping except for fixed-wrap-cell */
+.table td,
+.table th {
+  white-space: nowrap; /* globally prevents wrapping */
+  vertical-align: middle;
+}
+
+.table td {
+  font-size: 0.875rem;
+  padding: 0.75rem;
+}
+
+/* Truncate long text nicely */
+.truncate-cell {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Optional: wider cell for longer fields like "Checklist" or "Remarks" */
+.fixed-wrap-cell {
+  white-space: normal !important;  /* override global nowrap */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  vertical-align: top;
+  max-width: 2500px;
+  min-width: 300px;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+
+
+/* Table header style */
+.table thead.thead-dark th {
+  background-color: #1e293b;
+  color: #f8fafc;
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.75rem;
+}
+
+/* Zebra striping */
+.table tbody tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+/* Hover effect */
+.table-hover tbody tr:hover {
+  background-color: #f1f5f9;
+}
+
+/* Dropdowns inside filters */
+.column-filter {
+  font-size: 0.75rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.375rem;
+}
+
+/* Badges — consistent and clean */
+.badge {
+  padding: 0.35em 0.65em;
+  font-size: 0.75rem;
+  border-radius: 9999px;
+  font-weight: 500;
+}
+
+.badge-danger {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.badge-success {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.badge-warning {
+  background-color: #fef9c3;
+  color: #a16207;
+}
+
+.badge-secondary {
+  background-color: #e2e8f0;
+  color: #475569;
+}
+
+/* Upload input spacing */
+td form input[type="file"] {
+  font-size: 0.75rem;
+  padding: 0.25rem;
+}
+
+td form button {
+  font-size: 0.75rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 0.4rem;
+}
+
+/* Buttons inside table */
+.table .btn-sm {
+  padding: 0.3rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+/* Add gap below the filter form */
+form.form-inline {
+  margin-bottom: 1.5rem; /* space between filter form and table */
+}
+
+/* Keep each filter group vertical and spaced */
+form.form-inline .form-group {
+  display: flex;
+  flex-direction: column;
+  margin-right: 1rem;
+  margin-bottom: 0;
+  min-width: 140px;
+}
+
+/* Label styling */
+form.form-inline label {
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Group buttons together, aligned left, close to filters */
+form.form-inline .btn-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* space between buttons */
+  margin-left: 0; /* align left, no auto margin */
+}
+
+/* Button sizing */
+form.form-inline button.btn {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+/* Responsive stacking on small screens */
+@media (max-width: 575.98px) {
+  form.form-inline {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  form.form-inline .form-group,
+  form.form-inline .btn-group {
+    margin-right: 0;
+    margin-bottom: 1rem;
+    min-width: 100%;
+  }
+  form.form-inline .btn-group {
+    margin-left: 0;
+    justify-content: flex-start;
+  }
+}
