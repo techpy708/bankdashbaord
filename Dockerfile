@@ -8,9 +8,11 @@ WORKDIR /app
 RUN sed -i 's|http://deb.debian.org|https://deb.debian.org|g' /etc/apt/sources.list
 
 # Install system dependencies (minimal, no PostgreSQL or MySQL needed for SQLite)
+# Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libsqlite3-dev \
+    libpq-dev gcc build-essential \
     && rm -rf /var/lib/apt/lists/*
+
 
 # Install Python dependencies
 COPY requirements.txt .
