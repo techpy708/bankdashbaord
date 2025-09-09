@@ -94,10 +94,10 @@ load_dotenv()
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'bankdash',
-        'USER': 'bankdash_user',
-        'PASSWORD': '01sPrtDnoAKIJaKw9i75lgkxscYZ5j4Z',
-        'HOST': 'dpg-d2vcth8gjchc73b3qseg-a.oregon-postgres.render.com',
+        'NAME': 'bankdash_oog5',
+        'USER': 'bankdash_oog5_user',
+        'PASSWORD': 'vSZ3YKME73oSNBrYoXr2BygeAw0Se2at',
+        'HOST': 'dpg-d2vr1evdiees738lto4g-a.oregon-postgres.render.com',
         'PORT': '5432',
     }
 }
