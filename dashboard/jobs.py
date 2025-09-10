@@ -20,25 +20,63 @@ from datetime import datetime
 from django.utils.dateparse import parse_datetime
 from dashboard.models import Notification  # adjust if different app name
 
+# dashboard/jobs.py
+import feedparser
+from datetime import datetime, timedelta
+from django.utils.timezone import now
+from dashboard.models import Notification
+
+# dashboard/jobs.py
+import feedparser
+from datetime import datetime, timedelta
+from django.utils.timezone import now, make_aware
+from dashboard.models import Notification
+
+import feedparser
+from datetime import datetime, timedelta
+from django.utils.timezone import now, make_aware
+from dashboard.models import Notification
+import email.utils  # for parsing pubDate strings
+
 def fetch_rbi_notifications_job():
-    url = "https://rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=RSS"
+    url = "https://rbi.org.in/notifications_rss.xml"
     feed = feedparser.parse(url)
 
-    for entry in feed.entries[:10]:
-        # Parse published date string to datetime object
-        published_str = getattr(entry, 'published', None) or getattr(entry, 'updated', None)
-        published_at = None
-        if published_str:
-            # feedparser returns struct_time; convert to datetime
-            published_at = datetime(*entry.published_parsed[:6])
-        
-        # Check for duplicate by link
-        if not Notification.objects.filter(link=entry.link).exists():
-            Notification.objects.create(
-                title=entry.title,
-                link=entry.link,
-                published_at=published_at,
-                fetched_at=now()
-            )
-    print("✅ RBI Notifications synced")
+    is_first_time = Notification.objects.count() == 0
+    cutoff_date = now() - timedelta(days=180)  # last 6 months
 
+    count = 0
+    print(f"Feed entries fetched: {len(feed.entries)}")
+
+    for entry in feed.entries:
+        # Try to get published_at from published_parsed or pubDate
+        published_at = None
+
+        if hasattr(entry, "published_parsed") and entry.published_parsed:
+            published_at = datetime(*entry.published_parsed[:6])
+        elif hasattr(entry, "published") and entry.published:
+            # parse the pubDate string e.g., "Fri, 05 Sep 2025 18:40:00"
+            published_at = make_aware(datetime(*email.utils.parsedate(entry.published)[:6]))
+
+        if not published_at:
+            published_at = now()  # fallback
+
+        # First run → last 6 months only
+        if is_first_time and published_at < cutoff_date:
+            continue
+
+        obj, created = Notification.objects.get_or_create(
+            link=entry.link,
+            defaults={
+                "title": entry.title,
+                "message": getattr(entry, "summary", ""),
+                "published_at": published_at,
+            }
+        )
+
+        if created:
+            print(f"✅ Added: {entry.title} ({published_at})")
+            count += 1
+
+    print(f"✅ RBI Notifications synced: {count} new notifications.")
+    return count

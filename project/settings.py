@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['bankdashbaord.onrender.com','localhost','127.0.0.0']
 
-
+#ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [

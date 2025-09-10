@@ -731,7 +731,17 @@ def upload_banks(request):
 from django.shortcuts import render
 from .models import Notification
 
+from django.shortcuts import render
+from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
+from .models import Notification
+
 @login_required
 def rbi_notifications(request):
-    notifications = Notification.objects.all().order_by('-published_at')[:20]  # last 20
+    notifications_list = Notification.objects.all().order_by('-published_at')
+    paginator = Paginator(notifications_list, 20)  # 20 per page
+
+    page_number = request.GET.get('page')
+    notifications = paginator.get_page(page_number)
+
     return render(request, 'rbi_notifications.html', {'notifications': notifications})

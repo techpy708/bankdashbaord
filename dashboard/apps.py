@@ -30,8 +30,8 @@ class DashboardConfig(AppConfig):
         scheduler.add_job(
             fetch_rbi_notifications_job,
             trigger="cron",
-            hour=17,   # Run every morning at 9:00 AM
-            minute=36,
+            hour=18,   # Run every morning at 9:00 AM
+            minute=23,
             id="fetch_rbi_notifications",
             replace_existing=True,
         )
