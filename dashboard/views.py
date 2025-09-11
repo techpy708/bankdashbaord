@@ -37,12 +37,18 @@ def dashboard(request):
     if department_filter:
         observations = observations.filter(department=department_filter)
 
-    total_unique_branch_codes = BankMaster.objects.values_list('branch_code', flat=True).distinct().distinct().count()
+    total_unique_branch_codes = BankMaster.objects.values_list('branch_code', flat=True).distinct().count()
     total_departments = observations.values('department').distinct().count()
 
     # ✅ Only count OPEN/CLOSED with approved = YES
     total_open = observations.filter(status="OPEN").count()
     total_closed = observations.filter(status="CLOSED", approved="YES").count()
+    # Inside your dashboard view
+    total_high_risk = observations.filter(risk_category="High").count()
+    total_medium_risk = observations.filter(risk_category="Medium").count()
+    total_low_risk = observations.filter(risk_category="Low").count()
+    print(total_high_risk)
+
 
     # total_blank_observations = observations.filter(status='').count()
 
@@ -70,6 +76,9 @@ def dashboard(request):
         'total_departments': total_departments,
         'total_open': total_open,
         'total_closed': total_closed,
+        'total_high_risk': total_high_risk,
+        'total_medium_risk': total_medium_risk,
+        'total_low_risk': total_low_risk,
         'total_users': total_users,
         'all_branches': all_branches,
         'all_departments': all_departments,
@@ -187,12 +196,15 @@ def view_observations(request):
     department = request.GET.get("department", "").strip()
     financial_year = request.GET.get("financial_year", "").strip()
     period = request.GET.get("period", "").strip()
+    risk_category = request.GET.get('risk_category', '').strip()
+    status = request.GET.get('status', '').strip()
+
 
     # Start with empty queryset
     observations = Observation.objects.none()
 
     # Apply filters ONLY if any filter is used
-    if branch_code or department or financial_year or period:
+    if branch_code or department or financial_year or period or risk_category or status:
         observations = Observation.objects.all()
 
         # 🔐 Apply role-based filtering
@@ -221,6 +233,12 @@ def view_observations(request):
         if period and period != "ALL":
             observations = observations.filter(period=period)
 
+        if status:
+            observations = observations.filter(status=status)
+
+        if risk_category:
+            observations = observations.filter(risk_category=risk_category)
+
     if user.user_role == 'Admin':
         branches = BankMaster.objects.all().order_by('branch_code')
         departments = Department.objects.all().order_by('name')
@@ -236,8 +254,10 @@ def view_observations(request):
         "department": department,
         "financial_year": financial_year,
         "period": period,
+        "risk_category": risk_category,
         'all_branches': branches,
         'all_departments': departments,
+        'status' : status,
         "user_role": request.user.user_role,
     })
 
