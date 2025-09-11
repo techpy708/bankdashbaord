@@ -20,6 +20,7 @@ from django.db.models import Count
 from django.contrib.auth.decorators import login_required
 from .models import Observation  # Replace with your actual Observation model import
 from django.db.models import Q
+from datetime import date
 
 @login_required
 def dashboard(request):
@@ -28,6 +29,11 @@ def dashboard(request):
 
     branch_filter = request.GET.get('branch_code', '')
     department_filter = request.GET.get('department', '')
+    # Default financial year (current year - next year)
+    current_year = date.today().year
+    default_financial_year = f"{current_year}-{current_year+1}"
+
+    financial_year_filter = request.GET.get('financial_year', default_financial_year)
 
     observations = Observation.objects.all()
 
@@ -36,6 +42,8 @@ def dashboard(request):
         observations = observations.filter(branch_code=branch_filter)
     if department_filter:
         observations = observations.filter(department=department_filter)
+    if financial_year_filter:
+        observations = observations.filter(financial_year=financial_year_filter)
 
     total_unique_branch_codes = BankMaster.objects.values_list('branch_code', flat=True).distinct().count()
     total_departments = observations.values('department').distinct().count()
@@ -84,6 +92,7 @@ def dashboard(request):
         'all_departments': all_departments,
         'branch_filter': branch_filter,
         'department_filter': department_filter,
+        'financial_year_filter': financial_year_filter,
     })
 
 

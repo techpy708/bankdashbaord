@@ -48,9 +48,9 @@
             <label for="status" class="mb-1">Status</label>
             <select name="status" id="status" class="form-control form-control-sm">
                 <option value="">-- Select --</option>
-                <option value="ALL" {% if period == "ALL" or not period %}selected{% endif %}>ALL</option>
-                <option value="OPEN" {% if period == "OPEN" %}selected{% endif %}>OPEN</option>
-                <option value="CLOSED" {% if period == "CLOSED" %}selected{% endif %}>CLOSED</option>
+                <option value="ALL" {% if status  == "ALL" or not status  %}selected{% endif %}>ALL</option>
+                <option value="OPEN" {% if status  == "OPEN" %}selected{% endif %}>OPEN</option>
+                <option value="CLOSED" {% if status  == "CLOSED" %}selected{% endif %}>CLOSED</option>
             </select>
         </div>
 
