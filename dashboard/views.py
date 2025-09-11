@@ -203,10 +203,15 @@ def view_observations(request):
     # Get filters
     branch_code = request.GET.get("branch_code", "").strip()
     department = request.GET.get("department", "").strip()
-    financial_year = request.GET.get("financial_year", "").strip()
+    current_year = date.today().year
+    default_financial_year = f"{current_year}-{current_year+1}"
+
+    financial_year = request.GET.get('financial_year', default_financial_year)
+
     period = request.GET.get("period", "").strip()
     risk_category = request.GET.get('risk_category', '').strip()
     status = request.GET.get('status', '').strip()
+    print(financial_year)
 
 
     # Start with empty queryset
@@ -230,22 +235,22 @@ def view_observations(request):
                 observations = observations.none()  # No departments, no access
 
 
-        if branch_code:
+        if branch_code and branch_code != "ALL":
             observations = observations.filter(branch_code=branch_code)
 
-        if department:
+        if department and department != "ALL":
             observations = observations.filter(department=department)
 
-        if financial_year:
+        if financial_year and financial_year != "ALL":
             observations = observations.filter(financial_year=financial_year)
 
         if period and period != "ALL":
             observations = observations.filter(period=period)
 
-        if status:
+        if status and status != "ALL":
             observations = observations.filter(status=status)
 
-        if risk_category:
+        if risk_category and risk_category != "ALL":
             observations = observations.filter(risk_category=risk_category)
 
     if user.user_role == 'Admin':
@@ -255,13 +260,14 @@ def view_observations(request):
         branches = BankMaster.objects.filter(branch_code=user.branch_code)
         departments = user.departments.all().order_by('name')
 
-    
-
+    financial_years_total = Observation.objects.values_list('financial_year', flat=True).distinct().order_by('financial_year')
+  
     return render(request, "view_observation.html", {
         "observations": observations,
         "branch_code": branch_code,
         "department": department,
         "financial_year": financial_year,
+        "financial_years_total": financial_years_total,
         "period": period,
         "risk_category": risk_category,
         'all_branches': branches,

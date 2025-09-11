@@ -16,7 +16,7 @@
     <div class="form-group d-flex flex-column mr-3 mb-0" style="min-width: 150px;">
         <label for="branch_code" class="mb-1">Branch Code</label>
         <select name="branch_code" id="branch_code" class="form-control form-control-sm">
-                <option value="">All</option>
+                <option value="">ALL</option>
                 {% for branch in all_branches %}
                     <option value="{{ branch.branch_code }}" {% if branch_code == branch.branch_code %}selected{% endif %}>
                         {{ branch.branch_code }} - {{ branch.branch_name }}
@@ -29,7 +29,7 @@
         <div class="form-group d-flex flex-column mr-3 mb-0" style="min-width: 150px;">
             <label for="department" class="mb-1">Department</label>
             <select name="department" id="department" class="form-control form-control-sm">
-                <option value="">All</option>
+                <option value="">ALL</option>
                 {% for dept in all_departments %}
                     <option value="{{ dept.name }}" {% if department == dept.name %}selected{% endif %}>
                         {{ dept.name }}
@@ -39,10 +39,19 @@
 
         </div>
 
-        <div class="form-group d-flex flex-column mr-3 mb-0" style="min-width: 130px;">
+
+        <div class="form-group d-flex flex-column mr-3 mb-0" style="min-width: 150px;">
             <label for="financial_year" class="mb-1">Financial Year</label>
-            <input type="text" name="financial_year" id="financial_year" class="form-control form-control-sm" placeholder="YYYY-YYYY" pattern="^\d{4}-\d{4}$" value="{{ financial_year }}">
+            <select name="financial_year" id="financial_year" class="form-control form-control-sm">
+                <option value="">ALL</option>
+                {% for year in financial_years_total %}
+                    <option value="{{ year }}" {% if year == financial_year %}selected{% endif %}>{{ year }}</option>
+                {% endfor %}
+            </select>
+
         </div>
+
+
 
         <div class="form-group d-flex flex-column mr-3 mb-0" style="min-width: 130px;">
             <label for="status" class="mb-1">Status</label>
@@ -344,7 +353,7 @@ const USER_ROLE = "{{ user_role }}";
 
 document.addEventListener("DOMContentLoaded", function () {
 
-
+ 
     const table = document.querySelector('table');
     const filters = table.querySelectorAll('select.column-filter');
     const rows = Array.from(table.querySelector('tbody').rows);
@@ -379,7 +388,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 row.style.display = show ? '' : 'none';
             });
         });
+
+
+        
     });
+
+
+   
+    
+   
+
+
+
+    
 
 
     // Edit button
